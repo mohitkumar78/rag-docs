@@ -106,11 +106,12 @@ export default function MessageBubble({ message }: Props) {
 }
 
 function formatMarkdown(text: string): string {
+  if (!text) return ''
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+    .replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
@@ -118,13 +119,8 @@ function formatMarkdown(text: string): string {
     .replace(/^## (.+)$/gm, '<h2 class="text-lg font-semibold mt-3 mb-1 text-white">$1</h2>')
     .replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold mt-3 mb-1 text-white">$1</h1>')
     .replace(/^\s*[-*] (.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>[\s\S]*<\/li>)/, '<ul>$1</ul>')
     .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-    .replace(/\n{2,}/g, '</p><p>')
-    .replace(/^(?!<[h|u|o|l|p|c])(.*)/gm, (match) =>
-      match ? match : ''
-    )
-    .replace(/^(.+?)(<\/p>|$)/gm, (_, p) =>
-      p.startsWith('<') ? _ : `<p>${p}</p>`
-    )
+    .replace(/\n\n+/g, '</p><p>')
+    .replace(/\n/g, '<br/>')
+    .replace(/^(?!<)(.+)/gm, '<p>$1</p>')
 }
