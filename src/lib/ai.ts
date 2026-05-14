@@ -101,7 +101,7 @@ async function getHuggingFaceEmbedding(text: string): Promise<number[]> {
     'sentence-transformers/all-MiniLM-L6-v2'
 
   const res = await fetch(
-    `https://api-inference.huggingface.co/pipeline/feature-extraction/${model}`,
+    `https://api-inference.huggingface.co/models/${model}`,
     {
       method: 'POST',
       headers: {
