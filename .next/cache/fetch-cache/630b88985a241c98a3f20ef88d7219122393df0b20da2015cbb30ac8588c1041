@@ -1,0 +1,1 @@
+{"kind":"FETCH","data":{"headers":{"content-length":"13","content-type":"application/json; charset=utf-8","date":"Thu, 14 May 2026 10:02:13 GMT"},"body":"eyJtb2RlbHMiOltdfQ==","status":200,"url":"http://localhost:11434/api/tags"},"revalidate":31536000,"tags":[]}
