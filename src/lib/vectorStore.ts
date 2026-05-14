@@ -46,18 +46,27 @@ async function redisRead(): Promise<Store> {
   )
   const json = await res.json()
   if (!json.result) return { documents: [], chunks: [] }
-  return JSON.parse(json.result) as Store
+  try {
+    const parsed = typeof json.result === 'string'
+      ? JSON.parse(json.result)
+      : json.result
+    return {
+      documents: Array.isArray(parsed.documents) ? parsed.documents : [],
+      chunks: Array.isArray(parsed.chunks) ? parsed.chunks : [],
+    }
+  } catch {
+    return { documents: [], chunks: [] }
+  }
 }
 
 async function redisWrite(store: Store): Promise<void> {
-  const body = JSON.stringify(store)
   await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/${REDIS_KEY}`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify([body]),
+    body: JSON.stringify(JSON.stringify(store)),
   })
 }
 
