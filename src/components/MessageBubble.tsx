@@ -118,7 +118,7 @@ function formatMarkdown(text: string): string {
     .replace(/^## (.+)$/gm, '<h2 class="text-lg font-semibold mt-3 mb-1 text-white">$1</h2>')
     .replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold mt-3 mb-1 text-white">$1</h1>')
     .replace(/^\s*[-*] (.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+    .replace(/(<li>[\s\S]*<\/li>)/, '<ul>$1</ul>')
     .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
     .replace(/\n{2,}/g, '</p><p>')
     .replace(/^(?!<[h|u|o|l|p|c])(.*)/gm, (match) =>
