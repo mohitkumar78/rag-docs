@@ -89,37 +89,29 @@ async function* streamOllama(
 // ─── Embeddings ─────────────────────────────────────────────────────────────
 
 export async function getEmbedding(text: string): Promise<number[]> {
-  if (process.env.HUGGINGFACE_API_KEY) {
-    return getHuggingFaceEmbedding(text)
+  if (process.env.JINA_API_KEY) {
+    return getJinaEmbedding(text)
   }
   return getOllamaEmbedding(text)
 }
 
-async function getHuggingFaceEmbedding(text: string): Promise<number[]> {
-  const model =
-    process.env.EMBEDDING_MODEL ||
-    'sentence-transformers/all-MiniLM-L6-v2'
+async function getJinaEmbedding(text: string): Promise<number[]> {
+  const res = await fetch('https://api.jina.ai/v1/embeddings', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.JINA_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      input: [text],
+      model: 'jina-embeddings-v2-base-en',
+    }),
+  })
 
-  const res = await fetch(
-    `https://api-inference.huggingface.co/models/${model}`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        inputs: text,
-        options: { wait_for_model: true },
-      }),
-    }
-  )
-
-  if (!res.ok) throw new Error(`HuggingFace embedding failed: ${await res.text()}`)
+  if (!res.ok) throw new Error(`Jina embedding failed: ${await res.text()}`)
 
   const data = await res.json()
-  // HF returns [[...]] for single string input — flatten one level
-  return Array.isArray(data[0]) ? (data[0] as number[]) : (data as number[])
+  return data.data[0].embedding as number[]
 }
 
 async function getOllamaEmbedding(text: string): Promise<number[]> {
