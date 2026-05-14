@@ -21,9 +21,8 @@ interface Stats {
 
 interface OllamaStatus {
   running: boolean
-  models: string[]
-  llmModel: string
-  embeddingModel: string
+  provider: string
+  model: string
 }
 
 export default function Home() {
@@ -263,8 +262,8 @@ export default function Home() {
                 className={`w-2 h-2 rounded-full ${ollamaStatus.running ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}
               />
               {ollamaStatus.running
-                ? `Ollama · ${ollamaStatus.llmModel}`
-                : 'Ollama not running'}
+                ? `${ollamaStatus.provider} · ${ollamaStatus.model}`
+                : `${ollamaStatus.provider} not running`}
             </div>
           </div>
         )}
