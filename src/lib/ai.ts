@@ -19,7 +19,7 @@ export async function* streamChat(
 async function* streamGroq(
   messages: { role: string; content: string }[]
 ): AsyncGenerator<string> {
-  const model = 'llama3-8b-8192'
+  const model = 'llama-3.1-8b-instant'
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -139,7 +139,7 @@ export async function checkStatus(): Promise<{
     return {
       running: true,
       provider: 'Groq',
-      model: 'llama3-8b-8192',
+      model: 'llama-3.1-8b-instant',
     }
   }
 
