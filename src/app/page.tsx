@@ -46,10 +46,18 @@ export default function Home() {
   }, [messages, scrollToBottom])
 
   const loadDocuments = useCallback(async () => {
-    const res = await fetch('/api/documents')
+    const res = await fetch('/api/documents', { cache: 'no-store' })
     const data = await res.json()
     setDocuments(data.documents || [])
     setStats(data.stats || { documentCount: 0, chunkCount: 0 })
+  }, [])
+
+  const handleUploadSuccess = useCallback((doc: Document) => {
+    setDocuments((prev) => [...prev, doc])
+    setStats((prev) => ({
+      documentCount: prev.documentCount + 1,
+      chunkCount: prev.chunkCount + doc.chunkCount,
+    }))
   }, [])
 
   const loadStatus = useCallback(async () => {
@@ -273,7 +281,7 @@ export default function Home() {
           <p className="px-3 pb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
             Upload Document
           </p>
-          <FileUpload onUploadSuccess={loadDocuments} />
+          <FileUpload onUploadSuccess={handleUploadSuccess} />
         </div>
 
         {/* Document List */}

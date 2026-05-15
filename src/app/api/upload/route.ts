@@ -83,8 +83,13 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      docId,
-      name: file.name,
+      document: {
+        id: docId,
+        name: file.name,
+        uploadedAt: new Date().toISOString(),
+        chunkCount: chunks.length,
+        fileSize: file.size,
+      },
       chunkCount: chunks.length,
       message: `Indexed ${chunks.length} chunks from "${file.name}"`,
     })

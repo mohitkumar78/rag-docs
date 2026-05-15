@@ -2,8 +2,16 @@
 
 import { useRef, useState, useCallback } from 'react'
 
+interface UploadedDoc {
+  id: string
+  name: string
+  uploadedAt: string
+  chunkCount: number
+  fileSize: number
+}
+
 interface Props {
-  onUploadSuccess: () => void
+  onUploadSuccess: (doc: UploadedDoc) => void
 }
 
 export default function FileUpload({ onUploadSuccess }: Props) {
@@ -34,7 +42,7 @@ export default function FileUpload({ onUploadSuccess }: Props) {
             text: `✓ Indexed ${data.chunkCount} chunks from "${file.name}"`,
             type: 'success',
           })
-          onUploadSuccess()
+          onUploadSuccess(data.document)
         }
       } catch {
         setMessage({ text: 'Network error — is Ollama running?', type: 'error' })
